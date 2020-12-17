@@ -81,7 +81,6 @@ def analises(airfoil, re, aoa,  iter=10, mach = None,  ncrit = 9.0):
     xfoil.write()
     
     xfoil.write('ITER {:0.0f}'.format(iter))
-    print('ITER {:0.0f}'.format(iter))
 
     xfoil.write('VISC ' + str(re))
 
