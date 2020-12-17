@@ -12,7 +12,7 @@ elif sys.platform == 'linux2':
 
 class Xfoil:
 
-    def __init__(self, plotter = False):
+    def __init__(self, path, plotter = False):
         ''' star conection from xfoil '''
         self.xfsim = sp.Popen(path, stdin = sp.PIPE, stderr = sp.PIPE, stdout = sp.PIPE, shell= False, encoding='ascii')
         self._stdin = self.xfsim.stdin
@@ -64,7 +64,7 @@ def analises(airfoil, re, aoa,  iter=10, mach = None,  ncrit = 9.0):
     '''
 
     
-    xfoil = Xfoil()
+    xfoil = Xfoil(path)
     # loading airfoil 
     if airfoil.split()[0].upper() != 'NACA':
         name = '_'.join(airfoil.split('.')[:-1])+'.log'
@@ -88,13 +88,14 @@ def analises(airfoil, re, aoa,  iter=10, mach = None,  ncrit = 9.0):
     if mach:
         xfoil.write('MACH {:.3f}'.format(mach))
     
-    xfoil.write('PACC')
-    xfoil.write(name)
-
+   
     try:
         os.remove(name)
     except:
         pass
+    
+    xfoil.write('PACC')
+    xfoil.write(name)
 
     xfoil.write()
     xfoil.write('ASEQ {:0.2f} {:0.2f} {:0.2f}'.format(aoa[0],aoa[1],aoa[2]))
@@ -133,4 +134,3 @@ if __name__ == '__main__':
     print(cl)
     print(alpha)
     
-    #getPolar()
