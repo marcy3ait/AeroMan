@@ -128,9 +128,11 @@ def getPolar(filename):
 if __name__ == '__main__':
     import numpy as np
     #name = 'naca 2024'
-    name = 'airfoil_01.dat'
-    Re = np.linspace(1e6, 3e5,10)
-    Aoa = [0,20,0.25]
+    name = 'clark_y_.txt'
+    Re = 1.e6
+    Aoa = [-10,20,1]
+    analises(name, Re, Aoa, iter= 100)
+    '''
     start2 = time.time()
     for i in Re:
         start = time.time()
@@ -142,3 +144,4 @@ if __name__ == '__main__':
         print('Time: ', finish-start)
         
     print('time final: ',time.time()-start2)
+    '''
