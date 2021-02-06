@@ -127,8 +127,8 @@ def getPolar(filename):
 
 if __name__ == '__main__':
     import numpy as np
-    #name = 'naca 2024'
-    name = 'clark_y_.txt'
+    name = 'naca 2024'
+    
     Re = 1.e6
     Aoa = [-10,20,1]
     analises(name, Re, Aoa, iter= 100)
