@@ -91,7 +91,8 @@ class Wing:
                 "#Xle Yle Zle   Chord Ainc   [ Nspan Sspace ] \n" +
                 "%f    %f    0.0000    %f   0.000   13    1   \n" %( self.offset[2],  self.b[2], self.c[3])+
                 "AFIL 0.0 1.0\n" +
-                "naca 2024 \n")
+                "naca 2024 \n"
+            )
 
         # arquivo de setup (caso de angulo de ataque preescrito) 
         with open('case.txt', 'w') as file:
