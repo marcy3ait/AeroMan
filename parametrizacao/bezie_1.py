@@ -67,7 +67,7 @@ class BezierCoord:
     
     def saveCoord(self):
         coord = self._getCoord()
-        with open(self.name+'.txt', 'w') as file:
+        with open(self.name, 'w') as file:
             for line in range(0,len(coord)):
                 file.write(" %1.6f    %1.6f\n" %(coord[line,0],coord[line,1]))
         

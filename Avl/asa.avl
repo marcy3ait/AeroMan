@@ -1,0 +1,50 @@
+Simple Wing
+#Mach
+0.0                                 
+#iYsym  iZsym  Zsym
+0     0     0.0                     
+#Sref   Cref   Bref
+1.200000     0.300000     4.000000   
+#Xref   Yref   Zref
+0.00000     0.00000     0.00000 
+#
+#
+#====================================================================
+SURFACE                      
+Main Wing
+#Nchord  Cspace   [ Nspan Sspace ]
+11        1.0
+YDUPLICATE
+0.0
+SCALE
+#Xscale  Yscale  Zscale
+1.0  1.0  1.0
+TRANSLATE
+0.0  0.0  0.0
+ANGLE
+#twist angle bias for whole surface  
+0.000                                
+#====================================================================
+SECTION                                            
+#Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]       
+0.0000    0.0000    0.0000    0.300000   0.000    8    3 
+AFIL 0.0 1.0
+naca 2024
+#====================================================================
+SECTION                                     
+#Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]
+0.000000    1.500000    0.0000    0.300000   0.000    8    3  
+AFIL 0.0 1.0
+naca 2024
+#====================================================================
+SECTION                                                     
+#Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]   
+0.000000   2.500000    0.0000    0.300000   0.000   13    1      
+AFIL 0.0 1.0
+naca 2024 
+#====================================================================
+SECTION                                      
+#Xle Yle Zle   Chord Ainc   [ Nspan Sspace ] 
+0.000000    0.000000    0.0000    0.300000   0.000   13    1   
+AFIL 0.0 1.0
+naca 2024 

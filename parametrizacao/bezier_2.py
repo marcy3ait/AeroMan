@@ -211,11 +211,20 @@ if __name__ == "__main__":
         coord[:,1] = side*coord[:,1]
 
         return coord
-    naca0012 = naca00xx(10,40)
+    naca0012 = naca00xx(8,40)
     geraCoef = BezierControl(naca0012)
+    
     parametrizacao = bz1.BezierCoord(geraCoef.A)
     coordParametrizadas = parametrizacao._getCoord()
     plt.plot(naca0012[:,0],naca0012[:,1],'-k', label = 'Airfoil nao parametrizado')
     plt.plot(coordParametrizadas[:,0],coordParametrizadas[:,1],'--r', label = 'Airfoil parametrizado')
+
+    naca0012 = naca00xx(12,40)
+    geraCoef = BezierControl(naca0012)
+    parametrizacao = bz1.BezierCoord(geraCoef.A)
+    print(geraCoef.A)
+    coordParametrizadas = parametrizacao._getCoord()
+    plt.plot(naca0012[:,0],naca0012[:,1],'-g', label = 'Airfoil nao parametrizado')
+    #plt.plot(coordParametrizadas[:,0],coordParametrizadas[:,1],'--r', label = 'Airfoil parametrizado')
     plt.legend()
     plt.show()

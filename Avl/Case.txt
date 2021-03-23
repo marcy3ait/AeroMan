@@ -1,0 +1,9 @@
+LOAD asa.avl
+OPER
+A
+A -0.300000 
+X
+FT
+saida.txt
+
+QUIT

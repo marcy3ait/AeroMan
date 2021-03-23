@@ -16,9 +16,9 @@ class Xfoil:
     def __init__(self, path, plotter = False):
         ''' star conection from xfoil '''
         self.xfsim = sp.Popen(path, stdin = sp.PIPE, stderr = sp.PIPE, stdout = sp.PIPE, shell= False)
-        self._stdin = self.xfsim.stdin
-        self._stdout = self.xfsim.stdout
-        self._stderr = self.xfsim.stderr # saida de erro
+        #self._stdin = self.xfsim.stdin
+        #self._stdout = self.xfsim.stdout
+        #self._stderr = self.xfsim.stderr # saida de erro
 
         if plotter == False: # dasativando o modo ploter do xfoil
             self.write('PLOP\nG\n')
@@ -28,7 +28,7 @@ class Xfoil:
 
         n = '\n' if autoline else ''
         entrada = comando + n
-        self._stdin.write(entrada.encode('ascii'))
+        self.xfsim.stdin.write(entrada.encode('ascii'))
         #print(self.xfsim.returncode)
         
     def terminate(self):
@@ -107,41 +107,47 @@ def analises(airfoil, re, aoa,  iter=10, mach = None,  ncrit = 9.0):
 
 
 def getPolar(filename):
-    alpha = []
-    cl = []
-    cd = []
-    cm = []
-    f = open(filename,'r')
-    lines = f.readlines()
-    for row in range(12,len(lines)): 
-        data = lines[row].split()
-        alpha.append(float(data[0]))
-        cl.append(float(data[1]))
-        cd.append(float(data[2]))
-        cm.append(float(data[3]))
-    f.close()
-    return alpha,cl,cd,cm
+    try:
+        alpha = []
+        cl = []
+        cd = []
+        cm = []
+        f = open(filename,'r')
+        lines = f.readlines()
+        for row in range(12,len(lines)): 
+            data = lines[row].split()
+            alpha.append(float(data[0]))
+            cl.append(float(data[1]))
+            cd.append(float(data[2]))
+            cm.append(float(data[3]))
+        f.close()
+        return alpha,cl,cd,cm
+    except:
+        print('Não houve convergencia dos valores')
+        return None, None, None, None
  
 
     
 
 if __name__ == '__main__':
     import numpy as np
-    name = 'naca 2024'
+    name = 'teste_otimizacao.txt'
+    #name = 'NACA 2024'
     
-    Re = 1.e6
+    Re = [1.e5, 1.e6]
     Aoa = [-10,20,1]
-    analises(name, Re, Aoa, iter= 100)
-    '''
+   
     start2 = time.time()
     for i in Re:
         start = time.time()
         alpha,cl,cd,cm = analises(name, i, Aoa, iter = 10) # so retorna os dados que convergem 
         
         finish = time.time()
+        print('Reynolds: ',i)
         print('Cl: ',cl)
         print('AoA: ', alpha)
         print('Time: ', finish-start)
         
     print('time final: ',time.time()-start2)
-    '''
+    
+  
