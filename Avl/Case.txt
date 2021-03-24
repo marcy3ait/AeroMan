@@ -4,6 +4,9 @@ A
 A -0.300000 
 X
 FT
-saida.txt
+saida1.txt
+FS
+saida2.txt
+
 
 QUIT

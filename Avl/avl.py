@@ -2,12 +2,6 @@ import os
 import sys
 import subprocess as sp
 
-path = os.path.dirname(os.path.realpath(__file__))
-if sys.platform == 'win32':
-    path = os.path.join(path,'avl.exe')
-elif sys.platform == 'linux2':
-    path = ['avl'] # para variavel de ambiente
-
 class Wing:
 
     def __init__(self, c, b, offset, angle = -0.3, twist = None, g = 9.81, rho = 1.225):
@@ -52,6 +46,9 @@ class Wing:
                 "#Xref   Yref   Zref\n" +
                 "0.00000     0.00000     0.00000 \n" +
                 "#\n" +
+                "#CDdp\n" +
+                "#arrasto parasita\n" +
+                "0.0\n" +
                 "#\n" +
                 "#====================================================================\n"+
                 "SURFACE                      \n" +
@@ -72,6 +69,7 @@ class Wing:
                 "SECTION                                            \n" + 
                 "#Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]       \n" +
                 "0.0000    0.0000    0.0000    %f   0.000    8    3 \n" %(self.c[0])+
+                "#Camber nao padrao\n" +
                 "AFIL 0.0 1.0\n"+
                 "naca 2024\n"+
                 "#====================================================================\n"+
@@ -102,8 +100,11 @@ class Wing:
                 "A\n" +
                 "A %f \n" % (self.angle) +
                 "X\n"+
-                "FT\n"+
-                "saida.txt\n"+
+                "FT\n"+ # forças totais
+                "saida1.txt\n"+
+                "FS\n"+ # forças distribuidas
+                "saida2.txt\n"+
+                "\n"+
                 "\n"+
                 "QUIT\n"
             )
@@ -112,12 +113,23 @@ class Wing:
 
 
     def getDados(self):
+
+        # gerando os arquivos
+        self.comandos()
+
+        # rodando a simulação
+        simulacao = 'avl.exe<' + 'case.txt'
+        os.system(simulacao)
         pass
+
+
+
+
 
 
 if __name__ == '__main__':
     c = [0.3,0.3,0.3,0.3]
-    b = [1.5, 2.5, 0]
+    b = [1.5, 2.5, 3.0]
     offset = [0.0, 0.0, 0.0]
     asa = Wing(c,b,offset)
     asa.comandos()

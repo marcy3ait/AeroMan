@@ -131,9 +131,21 @@ def getPolar(filename):
 
 if __name__ == '__main__':
     import numpy as np
-    name = 'teste_otimizacao.txt'
-    #name = 'NACA 2024'
-    
+    import matplotlib.pyplot as plt
+    #name = 'teste_otimizacao.txt'
+    name = 'NACA 2024'
+    Re = 1.e6
+    Aoa = [-15,15,0.5]
+    alpha,cl,cd,cm = analises(name, Re, Aoa, iter = 50)
+    print('Cl', cl)
+    print('Cd', cd)
+    plt.plot(cd,cl)
+    plt.show()
+
+
+
+
+    '''
     Re = [1.e5, 1.e6]
     Aoa = [-10,20,1]
    
@@ -149,5 +161,6 @@ if __name__ == '__main__':
         print('Time: ', finish-start)
         
     print('time final: ',time.time()-start2)
+    '''
     
   
