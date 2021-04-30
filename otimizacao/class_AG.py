@@ -118,11 +118,12 @@ class runSga(Genetic_simple):
                 # cada indiv.
 
                 ## mutacao -> mod. 1 ind
-                self.pop[j][i] = self.mutacao_float(self.pop[j[i]])
+                self.pop[j][i] = self.mutacao_float(self.pop[j][i])
 
-                ## selecao
+            ## selecao
 
-                ## crossover -> mod. 2 ind.
+            ## crossover -> mod. 2 ind.
+            
 
 
 

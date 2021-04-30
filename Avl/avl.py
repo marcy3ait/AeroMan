@@ -143,7 +143,7 @@ class Wing:
         self.simulacao()
 
         # rodando a simulação
-        execulta = 'avl.exe<' + 'case.txt'
+        execulta = r'C:\Users\marcy\Desktop\TCC\AeroMan\avl\avl.exe<' + 'case.txt'
         os.system(execulta) # gera os arquivos de saida.
         pass
 
