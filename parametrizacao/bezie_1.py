@@ -94,7 +94,8 @@ if __name__ == "__main__":
     coord = coord_airfooil._getCoord()
     plt.plot(coord[:,0], coord[:,1], '--k')
     plt.plot(coord_airfooil.Points[:,0], coord_airfooil.Points[:,1], '--g')
-    plt.plot(coord_airfooil.A_[:,0], coord_airfooil.A_[:,1], 'xr')
-    plt.plot(coord_airfooil.B_[:,0], coord_airfooil.B_[:,1], 'xk')
+    plt.plot(coord_airfooil.A_[:,0], coord_airfooil.A_[:,1], 'xr', label = 'Pontos de controle A',)
+    plt.plot(coord_airfooil.B_[:,0], coord_airfooil.B_[:,1],  'xk', label = 'Pontos de controle B',)
+    plt.legend()
     plt.show()
     

@@ -1,7 +1,15 @@
 LOAD asa.avl
 OPER
+C1
+G
+9.810000
+V
+10.000000
+D
+1.225000
+
 A
-A -0.300000 
+A 3.000000 
 X
 FT
 saida1.txt

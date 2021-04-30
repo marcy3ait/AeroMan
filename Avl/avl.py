@@ -1,10 +1,22 @@
+#%%
 import os 
 import sys
 import subprocess as sp
+import numpy as np
+from pathlib import Path
+
+if str(Path(Path().absolute())).split('\\')[-1] == 'AeroMan':
+    path = str(Path(Path().absolute())) + r'\xfoil'
+else:
+    path = str(Path(Path().absolute().parents[0])) + r'\xfoil'
+
+sys.path.insert(1, path)
+import xfoil as xf
+
 
 class Wing:
 
-    def __init__(self, c, b, offset, angle = -0.3, twist = None, g = 9.81, rho = 1.225):
+    def __init__(self, c, b, offset, angle = 3, twist = None):
         '''
         Parametros:
         c : c [c1, c2, c3, c4];
@@ -18,19 +30,20 @@ class Wing:
 
         #escalares
         self.angle = angle
-        self.S = (c[0]+c[1])*b[0]/2 + (c[1]+c[2])*b[1]/2 + (c[2]+c[3])*b[2]/2 # area projetada a asa
-        self.B = sum(b) # envergadura total
+        self.S = 2*((c[0]+c[1])*b[0]/2 + (c[1]+c[2])*(b[1]-b[0])/2 + (c[2]+c[3])*(b[2]-b[1])/2) # area projetada a asa
+        self.B = 2*max(b) # envergadura total
         self.Ar = self.B**2/self.S # razão de aspecto da asa
         self.Lamb = c[-1]/c[0] # afilamento
         self.Mac = (2/3)*c[0]*(1 + self.Lamb + (self.Lamb)**2)/(1 + self.Lamb) # c media aerodinamca
 
-        # parametros externos
-        self.g = g
-        self.rho = rho
+        
 
         
-    def comandos(self):
+    def simulacao(self, velocity = 10, viscosity = 1.5*10**-5 , g = 9.81, rho = 1.225 ):
         '''criando arquivo txt de input do avl'''
+
+        Re = (velocity/viscosity)*np.array(self.c)
+
         
         # arquivo avl
         with open('asa.avl', 'w') as file:
@@ -70,26 +83,30 @@ class Wing:
                 "#Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]       \n" +
                 "0.0000    0.0000    0.0000    %f   0.000    8    3 \n" %(self.c[0])+
                 "#Camber nao padrao\n" +
-                "AFIL 0.0 1.0\n"+
-                "naca 2024\n"+
+                #"AFIL 0.0 1.0\n"+
+                "NACA\n"+
+                "2024\n"+
                 "#====================================================================\n"+
                 "SECTION                                     \n" +
                 "#Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]\n" +
                 "%f    %f    0.0000    %f   0.000    8    3  \n" %( self.offset[0],  self.b[0], self.c[1])+
-                "AFIL 0.0 1.0\n"+
-                "naca 2024\n"+
+                #"AFIL 0.0 1.0\n"+
+                "NACA\n"+
+                "2024\n"+
                 "#====================================================================\n"+
                 "SECTION                                                     \n" +
                 "#Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]   \n" +
                 "%f   %f    0.0000    %f   0.000   13    1      \n" %( self.offset[1],  self.b[1], self.c[2])+
-                "AFIL 0.0 1.0\n"+
-                "naca 2024 \n" +
+                #"AFIL 0.0 1.0\n"+
+                "NACA\n"+
+                "2024\n"+
                 "#====================================================================\n"+
                 "SECTION                                      \n" +
                 "#Xle Yle Zle   Chord Ainc   [ Nspan Sspace ] \n" +
                 "%f    %f    0.0000    %f   0.000   13    1   \n" %( self.offset[2],  self.b[2], self.c[3])+
-                "AFIL 0.0 1.0\n" +
-                "naca 2024 \n"
+                #"AFIL 0.0 1.0\n" +
+                "NACA\n"+
+                "2024\n"
             )
 
         # arquivo de setup (caso de angulo de ataque preescrito) 
@@ -97,6 +114,14 @@ class Wing:
             file.write(
                 "LOAD asa.avl\n" +
                 "OPER\n" +
+                "C1\n" +
+                "G\n" +
+                "%f\n" %(g) +
+                "V\n" +
+                "%f\n" %(velocity) +
+                "D\n" +
+                "%f\n" %(rho) +
+                "\n" +
                 "A\n" +
                 "A %f \n" % (self.angle) +
                 "X\n"+
@@ -115,11 +140,11 @@ class Wing:
     def getDados(self):
 
         # gerando os arquivos
-        self.comandos()
+        self.simulacao()
 
         # rodando a simulação
-        simulacao = 'avl.exe<' + 'case.txt'
-        os.system(simulacao)
+        execulta = 'avl.exe<' + 'case.txt'
+        os.system(execulta) # gera os arquivos de saida.
         pass
 
 
@@ -128,10 +153,11 @@ class Wing:
 
 
 if __name__ == '__main__':
-    c = [0.3,0.3,0.3,0.3]
-    b = [1.5, 2.5, 3.0]
+    c = [2.0, 1.5, 1.25, 1.0]
+    b = [1.5, 2.25, 3.0]
     offset = [0.0, 0.0, 0.0]
     asa = Wing(c,b,offset)
-    asa.comandos()
+    asa.getDados()
     print(asa.S)
-    print(sum(asa.b))
+    print(asa.B)
+# %%

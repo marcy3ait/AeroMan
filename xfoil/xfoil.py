@@ -2,9 +2,11 @@ import os
 import sys
 import subprocess as sp
 import time
+import numpy as np
 
 
 path = os.path.dirname(os.path.realpath(__file__))
+print(path)
 if sys.platform == 'win32':
     path = os.path.join(path,'xfoil.exe')
 elif sys.platform == 'linux2':
@@ -125,21 +127,61 @@ def getPolar(filename):
     except:
         print('Não houve convergencia dos valores')
         return None, None, None, None
+
+
  
+def getInterpola(filename):
+    cl = []
+    cd = []
+    f = open(filename,'r')
+    lines = f.readlines()
+    for row in range(12,len(lines)): 
+        data = lines[row].split()
+        cl.append(float(data[1]))
+        cd.append(float(data[2]))
+    f.close()
+
+    cl = np.array(cl)
+    cd = np.array(cd)
+
+    return cl, cd
 
     
 
 if __name__ == '__main__':
     import numpy as np
     import matplotlib.pyplot as plt
+    from scipy.optimize import curve_fit
     #name = 'teste_otimizacao.txt'
-    name = 'NACA 2024'
-    Re = 1.e6
-    Aoa = [-15,15,0.5]
-    alpha,cl,cd,cm = analises(name, Re, Aoa, iter = 50)
-    print('Cl', cl)
-    print('Cd', cd)
-    plt.plot(cd,cl)
+    name = 'polar0.dat'
+    re =  lambda C: C*10/(1.5*10**-5)
+    Aoa = [-25,25,2] #[-15,15,0.5]
+    c = [2.0, 1.5, 1.25, 1.0]
+    fig1,ax1 = plt.subplots()
+    fig2,ax2 = plt.subplots()
+    for corda in c:
+        Re = re(corda)
+        alpha,cl,cd,cm = analises(name, Re, Aoa, iter = 10)
+        print('Cl', cl)
+        print('Cd', cd)
+        ax1.plot(cd,cl,label = 'Re =  {:0.3f}'.format(Re))
+
+        ax2.plot(alpha,cl,label =  'Re =  {:0.3f}'.format(Re))
+
+    # interpolacao
+    def func(x, a, b, c):
+        return a*x**2+b*x+c
+
+    
+    popt, pcov = curve_fit(func, cl , cd)
+    cll = np.lispace(min(cl),max(cl),50)
+    ax1.plot(cll, func(cll,*popt),'--b', label = 'interpola')
+
+    
+    ax1.grid()
+    ax1.legend()
+    ax2.grid()
+    ax2.legend()
     plt.show()
 
 
