@@ -18,9 +18,7 @@ class Xfoil:
     def __init__(self, path, plotter = False):
         ''' star conection from xfoil '''
         self.xfsim = sp.Popen(path, stdin = sp.PIPE, stderr = sp.PIPE, stdout = sp.PIPE, shell= False)
-        #self._stdin = self.xfsim.stdin
-        #self._stdout = self.xfsim.stdout
-        #self._stderr = self.xfsim.stderr # saida de erro
+
 
         if plotter == False: # dasativando o modo ploter do xfoil
             self.write('PLOP\nG\n')
