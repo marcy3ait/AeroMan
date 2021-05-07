@@ -3,26 +3,25 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 
-# importar interface xfoil
-
-func = lambda a: sum(a)
-parents = 5
 
 class Genetic_simple(object):
     ''' Functions SGA '''
 
-    def __init__(self, ngen, npop, pmut, best, lim_up, lim_down):
+    def __init__(self, ngen, npop, pmut, best, pcross, function, lim_up, lim_down):
         
         self.ngen = int(ngen) # numero de geracoes 
         self.npop = int(npop) # tamanho da populacao
         self.pmut = float(pmut) # probalidade de mutacao de cada gene
-
+        self.pcross = float(pcross) # porcentagem da melhor pop. a cruzar
         self.lim_up = lim_up # limite inferior
         self.lim_down = lim_down # limite superior
 
         self.best = best # quantos dos melhores individuos passam para proxima
 
         self.nvar = len(self.lim_up) # numero de genes do cromossso
+
+        # defininfo a função fitness
+        self.function = function
 
     # ------- inicialização -----------
     def restricao(self, ind):
@@ -83,18 +82,27 @@ class Genetic_simple(object):
     
     def selecao(self, populacao):
         
-        melhores = [ (self.fitness(func, ind), ind) for ind in populacao ]
+        melhores = [ (self.fitness(ind), ind) for ind in populacao ]
         melhores = sorted(melhores)
         melhores = [indiv for _, indiv in melhores]
 
         populacao = melhores # pop. ordenada
+        percentil = round(len(populacao)*(1-self.pcross))
+
+        melhores = melhores[percentil:]
+        #print('len melhores ', len(melhores))
 
         for i in range(len(populacao) - self.best):
 
-            point = random.randint(1, self.nvar - 1)
             parent = random.sample(melhores, 2)
-            filho = self.crossover(parent[0], parent[1])
-            populacao[i][:] = filho
+            filho1, filho2 = self.crossover(parent[0], parent[1])
+            
+            populacao[i][:] = filho1
+
+            if i+1 > (len(populacao) - self.best):
+                break
+
+            populacao[i+1][:] = filho2
 
         return populacao
     
@@ -106,13 +114,13 @@ class Genetic_simple(object):
         pontoTroca = random.randint(1, self.nvar - 1) # nao pegar as extremidades
         individuoA[pontoTroca:], individuoB[pontoTroca:] = individuoB[pontoTroca:], individuoA[pontoTroca:]
 
-        return self.restricao(individuoA)
+        return self.restricao(individuoA), self.restricao(individuoB)
 
 
-    def fitness(self, func, individuo):
+    def fitness(self, individuo):
 
         try:
-            getValue = func(individuo)
+            getValue = self.function(individuo)
         except:
             getValue = -1
 
@@ -127,7 +135,6 @@ class Genetic_simple(object):
             # cada pop.
 
             if j == 0:
-                # inicializando o vetor populacao self.pop[n_geracao][n_individuos]
                
                 pop = self.population() # inicializa a pop.
 
@@ -140,9 +147,8 @@ class Genetic_simple(object):
             fitness, melhor = self.melhorInd(pop)
 
 
-            print( f' Geracao: {j} | Tamanho da pop.: {len(pop)}')
+            print( f' Geracao: {j+1} | Tamanho da pop.: {len(pop)}')
             print( f' Melhor fitness: {fitness} , {melhor} \n')
-            #print(pop)
             #print( f' Melhor individuo: {melhor} ')
             plt.plot(j, fitness, 'or')
 
@@ -158,10 +164,7 @@ class Genetic_simple(object):
     def melhorInd(self, populacao):
         
         aux = []
-        aux = ( [self.fitness(func, ind), ind] for ind in populacao )
-        #print(sorted(melhores, reverse=True)[:numInd])
-        #_, aux = sorted(melhores, reverse=True)[:numInd]
-        #print(sorted(aux, reverse=True)[0])
+        aux = ( [self.fitness(ind), ind] for ind in populacao )
         fitness, melhor = sorted(aux, reverse=True)[0]
     
 
@@ -174,8 +177,9 @@ if __name__ == "__main__":
     sup = [0.7, 0.7, 0.7, 0.7] 
     #algoritmo_genetico = Genetic_simple()
     # npop deve ser par
+    func = lambda x : sum(x)
 
-    validacao = Genetic_simple(ngen = 200, npop = 50, pmut = 0.2, best = 5, lim_up= sup, lim_down = inf )
+    validacao = Genetic_simple(ngen = 30, npop = 300, pmut = 0.015, best = 30, pcross = 0.95, function = func, lim_up= sup, lim_down = inf )
     pop = validacao.run()
 
    
