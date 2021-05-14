@@ -1,3 +1,4 @@
+#%%
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -10,7 +11,7 @@ class BezierControl:
         self.Points = self._ajusteAmostra(coord)
         self.A, self.B = self._get_bezier_coef(self.Points)
 
-    def _ajusteAmostra(self, coord, n = 11, cos=True): 
+    def _ajusteAmostra(self, coord, n = 9, cos=True): 
 
         '''
         Dado um conjunto de pontos [coord] obtem os coeficentes de Bezie e ajusta um aerofolio com [n] pontos.
@@ -211,20 +212,35 @@ if __name__ == "__main__":
         coord[:,1] = side*coord[:,1]
 
         return coord
-    naca0012 = naca00xx(8,40)
+    naca0012 = naca00xx(8,50)
     geraCoef = BezierControl(naca0012)
     
+
+    
     parametrizacao = bz1.BezierCoord(geraCoef.A)
+   
+
     coordParametrizadas = parametrizacao._getCoord()
     plt.plot(naca0012[:,0],naca0012[:,1],'-k', label = 'Airfoil nao parametrizado')
     plt.plot(coordParametrizadas[:,0],coordParametrizadas[:,1],'--r', label = 'Airfoil parametrizado')
-
-    naca0012 = naca00xx(12,40)
+    '''
+    naca0012 = naca00xx(12,80)
     geraCoef = BezierControl(naca0012)
+    Coef = geraCoef.A
     parametrizacao = bz1.BezierCoord(geraCoef.A)
     print(geraCoef.A)
     coordParametrizadas = parametrizacao._getCoord()
+    Coef = np.array(Coef)
+    Coef[:,1] = list(np.dot(Coef[:,1],0.6))
+    plt.plot(Coef[:,0],Coef[:,1],'or', label = 'pnt controle')
+    Coef[:,1] = list(np.dot(Coef[:,1],1.6))
+    plt.plot(Coef[:,0],Coef[:,1],'ob', label = 'pnt controle')
+
     plt.plot(naca0012[:,0],naca0012[:,1],'-g', label = 'Airfoil nao parametrizado')
-    #plt.plot(coordParametrizadas[:,0],coordParametrizadas[:,1],'--r', label = 'Airfoil parametrizado')
+    plt.plot(coordParametrizadas[:,0],coordParametrizadas[:,1],'--r', label = 'Airfoil parametrizado')
+    '''
     plt.legend()
     plt.show()
+# %%
+
+# %%

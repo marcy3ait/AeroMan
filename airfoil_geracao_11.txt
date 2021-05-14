@@ -1,0 +1,20 @@
+PLOP
+G
+
+LOAD teste_otimizacao.txt 
+
+OPER
+VPAR
+N 9.000000
+
+ITER 10
+VISC 2000000.000000
+MACH 0.000000
+PACC 
+saida_geracao_11.txt
+
+ASEQ 0.000000 25.000000 0.500000
+
+
+
+QUIT

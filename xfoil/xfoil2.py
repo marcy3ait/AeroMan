@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import subprocess as sp
 
 
 class airfoil:
@@ -29,7 +30,7 @@ class airfoil:
         name = f"airfoil_geracao_{j}.txt"
         with open(name, 'w') as file:
             file.write(
-                
+                "PLOP\nG\n\n"+
                 "LOAD %s \n" %(self.file_coordenadas) +
                 "\n"+
                 "OPER\n"+
@@ -54,14 +55,18 @@ class airfoil:
                 "QUIT\n"
             )
 
-        execulta = r'C:\Users\marcy\Desktop\TCC\AeroMan\xfoil\xfoil.exe<' + name
-        os.system(execulta) # gera os arquivos de saida.
+        path = r'C:\Users\marcy\Desktop\TCC\AeroMan\xfoil\xfoil.exe < ' + name
+        os.system(path) # gera os arquivos de saida.
+
+
 
         saida = self.getDados(f"saida_geracao_{str(j)}.txt")
         print("maxima eficiencia aerodinamica: ", saida)
 
         os.remove(f"saida_geracao_{str(j)}.txt")
         os.remove(name)
+
+        return saida
 
 
     def getDados(self, filename):
@@ -106,6 +111,7 @@ if __name__ == '__main__':
     Re = 2000000
     
     perfil = airfoil(name, Re, Aoa, iter = 10)
-    perfil.simula(11)
+    dado = perfil.simula(10)
+    print('\n\n\n Eficiencia aerodinamcia: ', dado)
     
 

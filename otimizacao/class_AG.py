@@ -87,9 +87,9 @@ class Genetic_simple(object):
         melhores = [indiv for _, indiv in melhores]
 
         populacao = melhores # pop. ordenada
-        percentil = round(len(populacao)*(1-self.pcross))
+        metchPool = round(len(populacao)*(1-self.pcross))
 
-        melhores = melhores[percentil:]
+        melhores = melhores[metchPool:]
         #print('len melhores ', len(melhores))
 
         for i in range(len(populacao) - self.best):
