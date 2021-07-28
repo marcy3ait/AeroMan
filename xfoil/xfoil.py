@@ -58,7 +58,7 @@ class Airfoil:
         self.mach = mach
         self.ncrit = ncrit
 
-        self.fitness = self.analises()
+        #self.fitness = self.analises()
         
     def analises(self ):
         
@@ -113,39 +113,39 @@ class Airfoil:
         xfoil.write()
         xfoil.terminate()
 
-        return self.getPolar(name)
+        return getPolar(name)
 
 
-    def getPolar(self, filename):
-                #import matplotlib.pyplot as plt 
-            #plt.figure()
+def getPolar( filename):
+            #import matplotlib.pyplot as plt 
+        #plt.figure()
+
+    
+        alpha = []
+        cl = []
+        cd = []
+        l_d = []
+        #cm = []
+        f = open(filename,'r')
+        lines = f.readlines()
+        for row in range(12,len(lines)-1): 
+            data = lines[row].split()
+            alpha.append(float(data[0]))
+            cl.append(float(data[1]))
+            cd.append(float(data[2]))
+            #cm.append(float(data[3]))
+
+            l_d.append(float(data[1])/float(data[2]))
+        f.close()
+        #print(np.array(alpha))
+        #print(np.array(l_d))
+        #plt.plot(np.array(alpha),np.array(l_d))
+        #plt.show()
 
         
-            alpha = []
-            cl = []
-            cd = []
-            l_d = []
-            #cm = []
-            f = open(filename,'r')
-            lines = f.readlines()
-            for row in range(12,len(lines)-1): 
-                data = lines[row].split()
-                alpha.append(float(data[0]))
-                cl.append(float(data[1]))
-                cd.append(float(data[2]))
-                #cm.append(float(data[3]))
-
-                l_d.append(float(data[1])/float(data[2]))
-            f.close()
-            #print(np.array(alpha))
-            #print(np.array(l_d))
-            #plt.plot(np.array(alpha),np.array(l_d))
-            #plt.show()
-
-            
-            dado = max(l_d)
-            
-            return dado
+        dado = max(l_d)
+        
+        return dado
 
 
     

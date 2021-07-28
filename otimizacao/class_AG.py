@@ -27,6 +27,8 @@ class Genetic_simple(object):
     def restricao(self, ind):
 
         ''' inserir restrições geometricas por exemplo '''
+        #intra = ind[:]
+        #extra = ind[:]
 
         return ind
 
@@ -173,6 +175,7 @@ class Genetic_simple(object):
 
 
 if __name__ == "__main__":
+    
     inf = [0.3, 0.3, 0.3, 0.3] 
     sup = [0.7, 0.7, 0.7, 0.7] 
     #algoritmo_genetico = Genetic_simple()
@@ -181,7 +184,7 @@ if __name__ == "__main__":
 
     validacao = Genetic_simple(ngen = 30, npop = 300, pmut = 0.015, best = 30, pcross = 0.95, function = func, lim_up= sup, lim_down = inf )
     pop = validacao.run()
-
+    
    
 
 

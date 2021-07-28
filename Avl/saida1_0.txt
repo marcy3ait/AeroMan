@@ -4,9 +4,9 @@
  Configuration: Simple Wing                                                 
      # Surfaces =   2
      # Strips   =  58
-     # Vortices = 638
+     # Vortices =1160
 
-  Sref =  9.0000       Cref =  1.5556       Bref =  6.0000    
+  Sref =  11.242       Cref =  1.2440       Bref =  8.9352    
   Xref =  0.0000       Yref =  0.0000       Zref =  0.0000    
 
  Standard axis orientation,  X fwd, Z down         
@@ -17,15 +17,15 @@
   Beta  =   0.00000     qc/2V =   0.00000
   Mach  =     0.000     rb/2V =  -0.00000     r'b/2V =  -0.00000
 
-  CXtot =   0.00868     Cltot =   0.00000     Cl'tot =   0.00000
-  CYtot =  -0.00000     Cmtot =  -0.08746
-  CZtot =  -0.30825     Cntot =   0.00000     Cn'tot =   0.00000
+  CXtot =   0.01342     Cltot =  -0.00000     Cl'tot =  -0.00000
+  CYtot =  -0.00000     Cmtot =  -0.13072
+  CZtot =  -0.37399     Cntot =  -0.00000     Cn'tot =  -0.00000
 
-  CLtot =   0.30828
-  CDtot =   0.00747
-  CDvis =   0.00000     CDind = 0.0074680
-  CLff  =   0.30867     CDff  = 0.0074468    | Trefftz
-  CYff  =   0.00000         e =    1.0182    | Plane  
+  CLtot =   0.37418
+  CDtot =   0.00617
+  CDvis =   0.00000     CDind = 0.0061735
+  CLff  =   0.37450     CDff  = 0.0062845    | Trefftz
+  CYff  =   0.00000         e =    1.0003    | Plane  
 
 
  ---------------------------------------------------------------

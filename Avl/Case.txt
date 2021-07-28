@@ -1,10 +1,10 @@
-LOAD asa.avl
+LOAD asa_0.avl
 OPER
 C1
 G
 9.810000
 V
-10.000000
+35.000000
 D
 1.225000
 
@@ -12,9 +12,7 @@ A
 A 3.000000 
 X
 FT
-saida1.txt
-FS
-saida2.txt
+saida1_0.txt
 
 
 QUIT
