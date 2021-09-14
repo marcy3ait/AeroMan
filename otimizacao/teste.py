@@ -63,39 +63,29 @@ def valida(A):
 
 count = 0
 
+
+
 def fitness(cromossos):
     global count
     count += 1
     name = f"airfoil_geracao_{count}"
     print(cromossos)
     pontosControle = geraPcontrole(cromossos)
-    if valida(pontosControle) == 1:
-        coordenadas_airfoil = bz.BezierCoord(pontosControle, name)
-        coordenadas_airfoil.saveCoord()
-        #coordenadas = coordenadas_airfoil._getCoord()
+   
+    coordenadas_airfoil = bz.BezierCoord(pontosControle, name)
+    coordenadas_airfoil.saveCoord()
+
+    coordenadas_airfoil = bz.BezierCoord(pontosControle, name)
+    coordenadas_airfoil.saveCoord()
+
+    Re = 3e6
+    Aoa = [0, 10, 0.5]
+
+    perfil = xf.airfoil(name, Re, Aoa, iter = 10)
+    
+    fit = perfil.getDados()
 
 
-        ##rodarXfoil()
-        Re = 3e6
-        Aoa = [0, 10, 0.5]
-
-        '''
-        # usando a classe xfoi
-        naca_teste = xf.Airfoil(name, Re, Aoa, iter = 30)
-        fit = naca_teste.fitness
-        '''
-
-        #usando a classe xfoil2
-        
-        perfil = xf.airfoil(name, Re, Aoa, iter = 10)
-        
-        fit = perfil.simula() 
-  
-    else: 
-        fit = -1
-    #plotAirfoil(coordenadas,fit)
-#   
-    print(fit)
     return fit
 
 

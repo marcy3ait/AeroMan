@@ -22,7 +22,7 @@ else:
 class Wing:
     count = 0
 
-    def __init__(self, c, b, offset, angle = 3, twist = None):#, lh, c_htail, envH, offset_htail, c_vtail, envV, offset_vtail, angle = 3, twist = None):
+    def __init__(self, c, b, offset, twist, angle = 3):#, lh, c_htail, envH, offset_htail, c_vtail, envV, offset_vtail, angle = 3, twist = None):
 
         '''
         Parametros:
@@ -51,19 +51,9 @@ class Wing:
         self.c = c
         self.b = b
         self.offset = offset
+        self.twist = twist
 
-        ##EMPENAGEM
-#
-        ###horizontal
-        #self.lh = lh
-        #self.c_htail = c_htail
-        #self.envH = envH
-        #self.offset_htail = offset_htail
-        #
-        ###vertical
-        #self.c_vtail = c_vtail
-        #self.envV = envV
-        #self.offset_vtail = offset_vtail
+       
 
 
         ##escalares
@@ -122,64 +112,35 @@ class Wing:
                 "#Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]       \n" +
                 "0.0000    0.0000    0.0000    %f   0.000    8    3 \n" %(self.c[0])+
                 "#Camber nao padrao\n" +
-                #"AFIL 0.0 1.0\n"+
+                
                 "NACA\n"+
                 "2024\n"+
                 "#------------------------------------------------------------------------\n" +
                 "SECTION                                     \n" +
                 "#Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]\n" +
-                "%f    %f    0.0000    %f   0.000    8    3  \n" %( self.offset[0],  self.b[0], self.c[1])+
-                #"AFIL 0.0 1.0\n"+
+                "%f    %f    0.0000    %f    %f    8    3  \n" %( self.offset[0],  self.b[0], self.c[1], self.twist[0])+
+                
                 "NACA\n"+
                 "2024\n"+
                 "#------------------------------------------------------------------------\n" +
                 "SECTION                                                     \n" +
                 "#Xle Yle Zle   Chord Ainc   [ Nspan Sspace ]   \n" +
-                "%f   %f    0.0000    %f   0.000   13    1      \n" %( self.offset[0]+self.offset[1],  self.b[0]+self.b[1], self.c[2])+
-                #"AFIL 0.0 1.0\n"+
+                "%f   %f    0.0000    %f    %f   13    1      \n" %( self.offset[0]+self.offset[1],  self.b[0]+self.b[1], self.c[2], self.twist[1])+
+                
                 "NACA\n"+
                 "2024\n"+
                 "#------------------------------------------------------------------------\n" +
                 "SECTION                                      \n" +
                 "#Xle Yle Zle   Chord Ainc   [ Nspan Sspace ] \n" +
-                "%f    %f    0.0000    %f   0.000   13    1   \n" %( self.offset[0]+self.offset[1]+self.offset[2],  self.b[0]+self.b[1]+self.b[2], self.c[3])+
-                #"AFIL 0.0 1.0\n" +
+                "%f    %f    0.0000    %f   %f   13    1   \n" %( self.offset[0]+self.offset[1]+self.offset[2],  self.b[0]+self.b[1]+self.b[2], self.c[3], self.twist[2])+
+                
                 "NACA\n"+
                 "2024\n"
 
-                #EMPENAGE
-                #"#====================================================================\n"+
-                #"SURFACE                      \n" +
-                #"Horizontal tail\n"+
-                #"5  1.0  7  -1.5  ! Nchord   Cspace\n"+
-                #"YDUPLICATE\n"+
-                #"0.00000\n"+
-                #"#--------------------------------------------------------------\n"+
-                #"SECTION\n"+
-                ##!Xle    Yle    Zle     Chord   Ainc  Nspanwise  Sspace
-                #"%f     0.00000     0.00000     %f         0.000   7  -1.5\n"%(self.lh, self.c_htail#[0])+ #( distancia da empenage, corda na raiz)
-                #"\n"+
-                #"#-----------------------\n"+
-                #"SECTION\n"+
-                ##!Xle    Yle    Zle     Chord   Ainc  Nspanwise  Sspace
-                #"%f        %f         0.00000     %f         0.000   1   0\n"%(self.offset_htail+self.#lh, self.envH, self.c_htail[1])+ #(offset da ponta, semi-envegadura, corda na ponta)
-#
-                #"#====================================================================\n"+
-                #"SURFACE                      \n" +
-                #"Vertical tail\n"+
-                #"6  1.0  10  0.5  ! Nchord   Cspace \n"+
-                #"#-------------------------------------------------------------- \n"+
-                #"SECTION \n"+
-                ##!Xle    Yle    Zle     Chord   Ainc  Nspanwise  Sspace
-                #"%f   0.00000    0.00000     %f     0.000   3   1.5 \n"%(self.lh, self.c_vtail[0])+
-                #"#----------------------- \n"+
-                #"SECTION \n"+
-                ##!Xle    Yle    Zle     Chord   Ainc  Nspanwise  Sspace
-                #"%f   0.00000     %f       %f     0.000   1   0 \n"%(self.lh + self.offset_vtail, #self.envV,  self.c_vtail[1])
             )
 
         # arquivo de setup (caso de angulo de ataque preescrito) 
-        with open(path +'\\' + f'case.txt', 'w') as file:
+        with open(path +'\\' + f'case_{self.id}.txt', 'w') as file:
             file.write(
                 f"LOAD asa_{self.id}.avl\n" +
                 "OPER\n" +
@@ -196,8 +157,9 @@ class Wing:
                 "X\n"+
                 "FT\n"+ # forças totais
                 f"saida1_{self.id}.txt\n"+
-                #"FS\n"+ # forças distribuidas
-                #"saida2.txt\n"+
+                "FS\n"+ # forças distribuidas
+                f"saida2_{self.id}.txt\n"+
+                "\n"+
                 "\n"+
                 "\n"+
                 "QUIT\n"
@@ -216,14 +178,16 @@ class Wing:
         wd = os.getcwd()
         os.chdir("/")
         
-        p = sp.Popen(f'avl.exe < case.txt',  shell=True, cwd = path)
+        p = sp.Popen(f'avl.exe < case_{self.id}.txt',  shell=True, cwd = path)
         try:
             p.wait(10)
         except sp.TimeoutExpired:
             dev_null = open(os.devnull, 'w')
+        
             command = ['TASKKILL', '/F', '/T', '/PID', str(p.pid)]
             proc = sp.Popen(command, stdin=dev_null, stdout=sys.stdout, stderr=sys.stderr)
             proc.wait(5)
+           
        
         try:
             #CX_line = (procura('CXtot', 'saida1.txt')) - 1
@@ -255,19 +219,20 @@ class Wing:
             eficiencia = 0.
 
         # remover arquivos de output
-        #try:
-        if os.path.exists(path +'\\' + f'asa_{self.id}.avl'):
-            os.remove(path +'\\' + f'asa_{self.id}.avl')
-        
-        if os.path.exists(path +'\\' + f'case.txt'):
-            os.remove(path +'\\' + f'case.txt')
-
-        if os.path.exists(path +'\\'+f'saida1_{self.id}.txt'):
-            os.remove(path +'\\'+ f'saida1_{self.id}.txt')
-        #except:
-        #    pass
        
+        finally:
+            if os.path.exists(path +'\\' + f'asa_{self.id}.avl'):
+                os.remove(path +'\\' + f'asa_{self.id}.avl')
 
+            if os.path.exists(path +'\\' + f'case_{self.id}.txt'):
+                os.remove(path +'\\' + f'case_{self.id}.txt')
+
+            if os.path.exists(path +'\\'+f'saida1_{self.id}.txt'):
+                os.remove(path +'\\'+ f'saida1_{self.id}.txt')
+
+            if os.path.exists(path +'\\'+f'saida2_{self.id}.txt'):
+                os.remove(path +'\\'+ f'saida2_{self.id}.txt')
+        
         return eficiencia
 
 
@@ -303,6 +268,7 @@ if __name__ == '__main__':
     gene1 = [1.4299984002640278, 1.3075239875751472, 1.2539656163535653, 1.2801193159007793, 0.9248098839369392, 2.3740222355264318, 0.93637788583294, 0.0039061492849629567, 0.15742830782377398, 0.0]
     gene2 = [1.4205196683390515, 1.3023889430828597, 1.226986381071515, 1.048941939987578, 0.9864347040865333, 2.498559993240941, 0.9826185802935963, 0.0, 0.17229260412172306, 
 0.0]
+
     corda = gene2[0:4]
     envergadura = gene2[4:7]
     offset = gene2[7:10]
