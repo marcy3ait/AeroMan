@@ -19,16 +19,16 @@ import avl as avl
 ####### Definições #######
 # ASA
     ## CORDA
-C1_INF = 1.4
+C1_INF = 1.2
 C1_SUP = 1.6
 
-C2_INF = 1.3
+C2_INF = 1.2
 C2_SUP = 1.6
 
 C3_INF = 1.2
 C3_SUP = 1.6
 
-C4_INF = 1.0
+C4_INF = 1.2
 C4_SUP = 1.6
 
     ## ENVERGADURA
@@ -60,6 +60,9 @@ TWIST2_SUP = 3.0
 
 TWIST3_INF = -3.0
 TWIST3_SUP = 3.0
+
+TWIST4_INF = -3.0
+TWIST4_SUP = 3.0
 
 
 '''
@@ -102,11 +105,6 @@ BV_SUP = 2.0
 OFFSET_EMPV_INF = 0.3
 OFFSET_EMPV_SUP = 0.8 
 '''
-#bound_min = [C1_INF, C2_INF, C3_INF, C4_INF, B1_INF, B2_INF, B3_INF, OFFSET1_INF, OFFSET2_INF, OFFSET3_INF]
-#bound_max = [C1_SUP, C2_SUP, C3_SUP, C4_SUP, B1_SUP, B2_SUP, B3_SUP, OFFSET1_SUP, OFFSET2_SUP, OFFSET3_SUP]
-
-
-SIZE_INDIVIDUO = 19 # numero de variaveis de otimização
 
 creator.create("FitnessMax", base.Fitness, weights = (1.,)) # função fitness de maximação
 creator.create("Individuo", list, fitness = creator.FitnessMax)
@@ -131,50 +129,23 @@ toolbox.register("offset2", random.uniform, OFFSET2_INF, OFFSET2_SUP)
 toolbox.register("offset3", random.uniform, OFFSET3_INF, OFFSET3_SUP)
 
 ## seções de torção
-toolbox.register("twist1", random.uniform, TWIST1_INF, TWIST1_SUP)
-toolbox.register("twist2", random.uniform, TWIST2_INF, TWIST2_SUP)
-toolbox.register("twist3", random.uniform, TWIST3_INF, TWIST3_SUP)
-
-# EMPENAGE - HORIZONTAL
-#toolbox.register("lh", random.uniform, LH_INF, LH_SUP) 
-#
-### cordas
-#toolbox.register("ch1", random.uniform, CH_R_INF, CH_R_SUP)
-#toolbox.register("ch2", random.uniform, CH_T_INF, CH_T_SUP)
-#
-### seções de envergadura
-#toolbox.register("bh1", random.uniform, BH_INF,BH_SUP)
-#
-### seções de offset
-#toolbox.register("offseth1", random.uniform, OFFSET_EMPH_INF, OFFSET_EMPH_SUP)
-#
-## EMPENAGE - VERTICAL
-#
-### cordas
-#toolbox.register("cv1", random.uniform, CV_R_INF, CV_R_SUP)
-#toolbox.register("cv2", random.uniform, CV_T_INF, CV_T_SUP)
-#
-### seções de envergadura
-#toolbox.register("bv1", random.uniform, BV_INF,BV_SUP)
-#
-### seções de offset
-#toolbox.register("offsetv1", random.uniform, OFFSET_EMPV_INF, OFFSET_EMPV_SUP)
-#
-
+toolbox.register("twist1", random.randint, TWIST1_INF, TWIST1_SUP)
+toolbox.register("twist2", random.randint, TWIST2_INF, TWIST2_SUP)
+toolbox.register("twist3", random.randint, TWIST3_INF, TWIST3_SUP)
+toolbox.register("twist4", random.randint, TWIST4_INF, TWIST4_SUP)
 
 # tipo de inicialização de individuo 
 toolbox.register("individuo", tools.initCycle, creator.Individuo, 
             (toolbox.c1,toolbox.c2,toolbox.c3,toolbox.c4, # CORDA ASA 
             toolbox.b1,toolbox.b2,toolbox.b3, # ENVERGADUA ASA
             toolbox.offset1,toolbox.offset2,toolbox.offset3, # offset
-            toolbox.twist1,toolbox.twist2,toolbox.twist3)) #torção))  
+            toolbox.twist1,toolbox.twist2,toolbox.twist3,toolbox.twist4)) #torção))  
 
 
 # congifuração do AG
 toolbox.register("population", tools.initRepeat, list, toolbox.individuo) # tipo de inicialização de população
 toolbox.register("mate", tools.cxTwoPoint) # crossover tipo dois pontos de troca (flip)
-toolbox.register("mutate", tools.mutFlipBit, indpb=0.05) # mutação de flip
-#toolbox.register("mutate", tools.mut, low = bound_min, up = bound_max, indpb = 0.05)
+#toolbox.register("mutate", tools.mutFlipBit, indpb=0.05) # mutação de flip
 toolbox.register("select", tools.selTournament, tournsize=5) # seleção por torneio 
 
 
@@ -198,46 +169,55 @@ def checkGeometria(gene):
     twist1 = gene[10]
     twist2 = gene[11]
     twist3 = gene[12]
+    twist4 = gene[13]
     
     if ( (corda1 >= C1_INF and corda1 <= C1_SUP) and (corda2 >= C2_INF and corda2 <= C2_SUP) and (corda3 >= C3_INF and corda3 <= C3_SUP) and (corda4 >= C4_INF and corda4 <= C4_SUP) \
     and (envergadura1 > B1_INF and envergadura1 <= B1_SUP) and (envergadura2 > B2_INF and envergadura2 <= B2_SUP) and (envergadura3 > B3_INF and envergadura3 <= B3_SUP) \
     and (offset1 >= OFFSET1_INF and offset1 <= OFFSET1_SUP) and (offset2 >= OFFSET2_INF and offset2 <= OFFSET2_SUP) and (offset3 >= OFFSET3_INF and offset3 <= OFFSET3_SUP) \
-    and (twist1 >= TWIST1_INF and twist1 <= TWIST1_SUP) and (twist2 >= TWIST2_INF and twist2 <= TWIST2_SUP) and (twist3 >= TWIST3_INF and twist3 <= TWIST3_SUP)): return True
+    and (twist1 >= TWIST1_INF and twist1 <= TWIST1_SUP) and (twist2 >= TWIST2_INF and twist2 <= TWIST2_SUP) and (twist3 >= TWIST3_INF and twist3 <= TWIST3_SUP) and (twist4 >= TWIST4_INF and twist4 <= TWIST4_SUP)): return True
     
     return False
-    
+
 
 
 ####### Fitness #######
 def funcaoObjetivo(gene):
     ''' recebe o gene do individuo '''
-    avaliacao = funcaoAvl(gene)
+    efici = funcaoAvl(gene)
 
-    return [avaliacao,]
+    return [efici,]
 
 def funcaoAvl(gene):
+
     corda = gene[0:4]
     envergadura = gene[4:7]
     offset = gene[7:10]
-    twist = gene[10:13]
+    twist = gene[10:14]
     
    
     individuo  = avl.Wing(corda, envergadura, offset, twist)
 
-    fit = individuo.getDados()
+    efici = individuo.getDados()
+    
 
-    return fit
+    return efici
+
+
+
 
 toolbox.register("evaluate", funcaoObjetivo)
-toolbox.decorate("evaluate", tools.DeltaPenalty(checkGeometria, [1.0, ]))
+#toolbox.decorate("evaluate", tools.DeltaPenalty(checkGeometria, [1.0, ]))
 
 ####### Display #######
 
 def main(number_ind, geracao):
     # individuo por populacao
     
-    #pool = multiprocessing.Pool(processes=4)
-    #toolbox.register("map", pool.map)
+    random.seed(64)
+    
+    pool = multiprocessing.Pool(processes=2)
+    toolbox.register("map", pool.map)
+
     pop = toolbox.population(n=number_ind)  
     hof = tools.HallOfFame(5)  
     stats = tools.Statistics(lambda ind: ind.fitness.values)
@@ -251,30 +231,26 @@ def main(number_ind, geracao):
 
 if __name__ == "__main__":
     # Run main function
-    [pop, logger, hof] = main(100, 50)
+    import time 
+    start = time.time()
+    [pop, logger, hof] = main(50, 15)
+    finish = time.time()
 
     # Plot the results
     best = hof.items[0]
     print()
+    print("Tempo: ", finish-start)
     print("Melhor Solucao = ", best)
     print("Fitness do melhor individuo = ", best.fitness.values[0])
-    #print(hof[0])
-    #print(hof[1])
-    #print(hof[2])
-    #print(hof[3])
-    #print(hof[4])
-
-    #print('# #=============================================================================######################')
-    #print('Score:', best.fitness.values[0])
-    #print('# #=============================================================================######################')
+   
 
     print(logger)
     import matplotlib.pyplot as plt
     gen = logger.select("gen")
     fit = logger.select("max")
     avg = logger.select("avg")
-    plt.plot(gen,fit, '--r', label = "melhores individuos")
-    plt.plot(gen,avg, '--b', label = "media dos individuos")
+    plt.plot(gen, fit, '--r', label = "melhores individuos")
+    plt.plot(gen, avg, '--b', label = "media dos individuos")
     plt.xlabel('fitness')
     plt.ylabel('geração')
     plt.legend()
