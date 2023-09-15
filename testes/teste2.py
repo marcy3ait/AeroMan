@@ -1,4 +1,9 @@
 import numpy as np
+import random as rp
+
+def func(vector):
+    saida = rp.choice(vector)
+    return saida
 
 def area(point1,point2,point3):
     x1 = point1[0]

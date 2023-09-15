@@ -1,9 +1,8 @@
 import os
 import numpy as np
 import subprocess as sp
-import time
 import sys
-
+import matplotlib.pyplot as plt
 from pathlib import Path
 
 if str(Path(Path().absolute())).split('\\')[-1] == 'AeroMan':
@@ -40,10 +39,10 @@ class airfoil:
     def simula(self):
         
         
-        with open(f'{self.file_coordenadas}.txt', 'w') as file:
+        with open(path +'\\'+ f'input.txt', 'w') as file:
             file.write(
                 #"PLOP\nG\n\n"+
-                "LOAD %s \n" %(f'coord_{self.file_coordenadas}.txt') +
+                "LOAD %s \n" %(f'{self.file_coordenadas}.dat') +
                 "\n"+
                 "PANE 100\n"+
                 "OPER\n"+
@@ -68,7 +67,14 @@ class airfoil:
                 "QUIT\n"
             )
 
+    
+    def coef(self, dataX, dataY):
+        dataX = np.array(dataX)
+        dataY = np.array(dataY)
+        dx = dataX[-1] - dataX[0]
+        dy = dataY[-1] - dataY[0]
 
+        return float(dy/dx)
      
 
 
@@ -81,7 +87,7 @@ class airfoil:
         os.chdir("/")
 
        
-        p = sp.Popen(f'xfoil.exe < {self.file_coordenadas}.txt',  shell=True, cwd = path)
+        p = sp.Popen(path +'\\'+f'xfoil.exe < input.txt',  shell=True, cwd = path)
 
         try:
             p.wait(20)
@@ -94,48 +100,59 @@ class airfoil:
         cl = []
         cd = []
         l_d = []
+
         try:
             with open(path +'\\'+f'saida_{self.file_coordenadas}.txt','r') as file:
                 lines = file.readlines()
-                print(lines)
+                #print(lines)
                 for row in range(12,len(lines)-1): 
                     data = lines[row].split()
                     
                     alpha.append(float(data[0]))
                     cl.append(float(data[1]))
                     cd.append(float(data[2]))
+
+
                     #cm.append(float(data[3]))
 
-                    l_d.append(float(data[1])/float(data[2]))
+                    #l_d.append(float(data[1])/float(data[2]))
                 
-                dado = max(l_d)
+            
+
+            if os.path.exists(path +'\\' + f'input.txt'):
+                os.remove(path +'\\' + f'input.txt')
+            
+
+            if os.path.exists(path +'\\'+f'saida_{self.file_coordenadas}.txt'):
+                 os.remove(path +'\\'+f'saida_{self.file_coordenadas}.txt') # arquivo de saida
+            
         except:
-            dado = -1
-        
-
-        if os.path.exists(path +'\\' + f'coord_{self.file_coordenadas}.txt'):
-            os.remove(path +'\\' + f'coord_{self.file_coordenadas}.txt')
-        
-        if os.path.exists(path +'\\' + f'{self.file_coordenadas}.txt'):
-            os.remove(path +'\\' + f'{self.file_coordenadas}.txt') # arquivo de execução
-
-        if os.path.exists(path +'\\'+f'saida_{self.file_coordenadas}.txt'):
-             os.remove(path +'\\'+f'saida_{self.file_coordenadas}.txt') # arquivo de saida
+            return None, None, None
         
         
-        return dado
+        cla = self.coef(alpha,cl)
+        print('derivada ',cla)
+        return np.array(alpha), np.array(cl), np.array(cd)
         
 
 
 
 if __name__ == '__main__':
-    name = 'teste'
+    name = 'naca0012'
 
-    Aoa = [0,25,5] #[-15,15,0.5]
+    Aoa = [-15,15,0.5]
     c = [2.0, 1.5, 1.25, 1.0]
     Re = 6e6
     perfil = airfoil(name, Re, Aoa, iter = 10)
-    dado = perfil.getDados()
-    print('\n\n\n Eficiencia aerodinamica: ', dado)
+    aoa,cl,cd = perfil.getDados()
+
+    print('\n aoa: ', aoa)
+    print('\n cl: ', cl)
+    print('\n cd: ', cd)
     
+    plt.figure(1)
+    plt.plot(aoa,cl)
+    plt.figure(2)
+    plt.plot(cd,cl)
+    plt.show()
 

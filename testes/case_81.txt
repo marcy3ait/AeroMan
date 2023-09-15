@@ -1,0 +1,26 @@
+LOAD asa_81
+OPER
+C1
+G
+9.810000
+V
+35.000000
+D
+1.225000
+
+M
+CD
+0.01
+
+A
+A
+3.000000 
+X
+FT
+saida1_81.txt
+FS
+saida2_81.txt
+
+
+
+QUIT
